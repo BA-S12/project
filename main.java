@@ -162,12 +162,12 @@ public class Investment extends Application {
                     balance += cyi;
 
                     lbl_years.setText(String.valueOf(years));
-                    lbl_cye.setText(String.format("$%.2f", cyi));
-                    lbl_totalBalance.setText(String.format("$%.2f", balance));
+                    lbl_cye.setText(String.format("SR%.2f", cyi));
+                    lbl_totalBalance.setText(String.format("SR%.2f", balance));
 
                     ta_history.appendText("Year #: " + years +
-                            " you earned: " + String.format("$%.2f", cyi) +
-                            " and your total balance is: " + String.format("$%.2f", balance) + "\n");
+                            " you earned: " + String.format("SR%.2f", cyi) +
+                            " and your total balance is: " + String.format("SR%.2f", balance) + "\n");
 
                     // Clear the message label
                     lbl_message.setText("");
