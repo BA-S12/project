@@ -1,3 +1,10 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package project;
+
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -33,8 +40,14 @@ public class Project extends Application {
 
 //      make button width take full width of their parent
         a.btn_calculate.setMaxWidth(Double.MAX_VALUE);
-
         a.btn_calculate.setOnAction(new CalculateHandler());
+
+        a.btn_clear.setMaxWidth(Double.MAX_VALUE);
+        a.btn_clear.setOnAction(new ClearHandler());
+
+// Setup export button
+        a.btn_export.setMaxWidth(Double.MAX_VALUE);
+        a.btn_export.setOnAction(new ExportHandler());
 
 // Create UI panes for displaying output
         VBox yearsPane = new VBox(a.lbl_years, a.lbl_yearHint);
@@ -49,15 +62,11 @@ public class Project extends Application {
         HBox outputPane = new HBox(yearsPane, cyePane, totalBalancePane);
         outputPane.setAlignment(Pos.CENTER);
 
-// Setup export button
-        a.btn_export.setMaxWidth(Double.MAX_VALUE);
-        a.btn_export.setOnAction(new ExportHandler());
-
 // Create root pane and arrange UI components
         BorderPane rootPane = new BorderPane();
 
         VBox top = new VBox(inputPane, messagePane, a.btn_calculate);
-        VBox bottom = new VBox(a.ta_history, a.btn_export);
+        VBox bottom = new VBox(a.btn_clear, a.ta_history, a.btn_export);
         a.ta_history.setDisable(true);
         //a.ta_history.addEventFilter(KeyEvent.KEY_TYPED, e -> e.consume());
 
@@ -86,12 +95,12 @@ public class Project extends Application {
 // Set padding for UI components
         Style.setPadding(8, a.lbl_initialBalanceTitle, a.lbl_interestRateTitle, a.tf_interestRate, a.tf_initialBalance,
                 a.lbl_years, a.lbl_yearHint, a.lbl_cye, a.lbl_cycHint, a.lbl_totalBalance, a.lbl_totalBalanceHint,
-                a.ta_history, a.btn_calculate, a.btn_export);
+                a.ta_history, a.btn_calculate, a.btn_clear, a.btn_export);
 
 // Set font size for UI components
         Style.setFont(16, a.lbl_initialBalanceTitle, a.lbl_interestRateTitle, a.tf_interestRate, a.tf_initialBalance,
                 a.lbl_years, a.lbl_yearHint, a.lbl_cye, a.lbl_cycHint, a.lbl_totalBalance, a.lbl_totalBalanceHint,
-                a.ta_history, a.btn_calculate, a.btn_export);
+                a.ta_history, a.btn_calculate, a.btn_clear, a.btn_export);
 
         Style.setFont(40, a.lbl_years, a.lbl_cye, a.lbl_totalBalance);
 
@@ -100,11 +109,11 @@ public class Project extends Application {
         Style.styleText("red", a.lbl_yearHint, a.lbl_cycHint, a.lbl_totalBalanceHint);
 
 // Create and show the scene
-        Scene scene = new Scene(rootPane);
+        Scene scene = new Scene(rootPane, 750, 750);
         stage.setScene(scene);
         stage.setTitle("Investment app");
         stage.setMinWidth(650);
-        stage.setMinHeight(650);
+        stage.setMinHeight(580);
         stage.getIcons().add(image);
         stage.show();
 
@@ -115,6 +124,14 @@ public class Project extends Application {
         @Override
         public void handle(ActionEvent event) {
             a.calculate();
+        }
+    }
+
+    public class ClearHandler implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(ActionEvent event) {
+            a.clear();
         }
     }
 
