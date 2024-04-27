@@ -1,10 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-package project;
-
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -14,6 +7,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
@@ -24,7 +18,6 @@ public class Project extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        a.stage = stage;
 
         Image image = new Image("icon.jpg");
         //Line 1
@@ -87,7 +80,7 @@ public class Project extends Application {
                 a.calculate();
             } else if (e.getCode() == KeyCode.SPACE) {
                 if (!a.ta_history.getText().equalsIgnoreCase("")) {
-                    a.export();
+                    a.export(stage);
                 }
             }
         });
@@ -138,8 +131,8 @@ public class Project extends Application {
     public class ExportHandler implements EventHandler<ActionEvent> {
 
         @Override
-        public void handle(ActionEvent actionEvent) {
-            a.export();
+        public void handle(ActionEvent e) {
+            a.export((Stage) ((Node) e.getSource()).getScene().getWindow());
         }
     }
 
