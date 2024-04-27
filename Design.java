@@ -36,6 +36,7 @@ public class Design {
     public Design() {
         btn_calculate = new Button("Calculate");
         btn_clear = new Button("Clear");
+        btn_clear.setDisable(true);
         btn_export = new Button("Export");
         btn_export.setDisable(true);
 
@@ -104,6 +105,7 @@ public class Design {
 
             if (!ta_history.getText().equalsIgnoreCase("")) {
                 btn_export.setDisable(false);
+                btn_clear.setDisable(false);
             }
 
         }
@@ -137,7 +139,7 @@ public class Design {
         lbl_totalBalance.setText("0");
         ta_history.setText("");
         lbl_message.setText("");
-        btn_export.setDisable(false);
-
+        btn_export.setDisable(true);
+        btn_clear.setDisable(true);
     }
 }
