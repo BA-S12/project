@@ -1,143 +1,143 @@
-import javafx.application.Application;
-import javafx.geometry.Pos;
-import javafx.scene.Scene;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import java.io.IOException;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
-import javafx.scene.layout.BorderPane;
 
-public class Project extends Application {
+public class Design {
 
-    private Design a = new Design();
+    protected Button btn_calculate, btn_export, btn_clear;
 
-    @Override
-    public void start(Stage stage) throws IOException {
-        a.stage = stage;
+// Declare a Labels
+    protected Label lbl_initialBalanceTitle,
+            lbl_interestRateTitle,
+            lbl_years,
+            lbl_yearHint,
+            lbl_cye,
+            lbl_cycHint,
+            lbl_totalBalance,
+            lbl_totalBalanceHint,
+            lbl_message;
 
-        Image image = new Image("icon.jpg");
-        //Line 1
-        HBox inputPane = new HBox(a.lbl_initialBalanceTitle, a.tf_initialBalance, a.lbl_interestRateTitle,
-                a.tf_interestRate);
-        inputPane.setAlignment(Pos.CENTER);
+//    Declare a Text fields
+    protected TextField tf_initialBalance, tf_interestRate;
 
-//        Label for to what the user entered in text field
-        HBox messagePane = new HBox(
-                a.lbl_message
-        );
-        messagePane.setAlignment(Pos.CENTER);
+//    Declare a Text Area
+    protected TextArea ta_history;
 
-//      make button width take full width of their parent
-        a.btn_calculate.setMaxWidth(Double.MAX_VALUE);
-        a.btn_calculate.setOnAction(new CalculateHandler());
+    protected double balance;
+    protected int years;
+//    Create object for what we declared and invoked in start method
 
-        a.btn_clear.setMaxWidth(Double.MAX_VALUE);
-        a.btn_clear.setOnAction(new ClearHandler());
+    public Design() {
+        btn_calculate = new Button("Calculate");
+        btn_clear = new Button("Clear");
+        btn_export = new Button("Export");
+        btn_export.setDisable(true);
 
-// Setup export button
-        a.btn_export.setMaxWidth(Double.MAX_VALUE);
-        a.btn_export.setOnAction(new ExportHandler());
+        lbl_initialBalanceTitle = new Label("Initial Balance");
+        lbl_interestRateTitle = new Label("Interest Rate");
+        lbl_years = new Label("0");
+        lbl_yearHint = new Label("Years");
+        lbl_cye = new Label("0");
+        lbl_cycHint = new Label("Current year earnings");
+        lbl_totalBalance = new Label("0");
+        lbl_totalBalanceHint = new Label("Total Balance");
+        lbl_message = new Label("");
+        tf_initialBalance = new TextField();
+        tf_interestRate = new TextField();
 
-// Create UI panes for displaying output
-        VBox yearsPane = new VBox(a.lbl_years, a.lbl_yearHint);
-        yearsPane.setAlignment(Pos.CENTER);
+        ta_history = new TextArea();
 
-        VBox cyePane = new VBox(a.lbl_cye, a.lbl_cycHint);
-        cyePane.setAlignment(Pos.CENTER);
+    }
 
-        VBox totalBalancePane = new VBox(a.lbl_totalBalance, a.lbl_totalBalanceHint);
-        totalBalancePane.setAlignment(Pos.CENTER);
+    public void calculate() {
 
-        HBox outputPane = new HBox(yearsPane, cyePane, totalBalancePane);
-        outputPane.setAlignment(Pos.CENTER);
+        // Get the text from input fields
+        String initialBalanceText = tf_initialBalance.getText().trim();
+        String interestRateText = tf_interestRate.getText().trim();
 
-// Create root pane and arrange UI components
-        BorderPane rootPane = new BorderPane();
+        // Check if fields are empty
+        if (initialBalanceText.isEmpty() || interestRateText.isEmpty()) {
+            lbl_message.setText("You must enter numerical value.");
 
-        VBox top = new VBox(inputPane, messagePane, a.btn_calculate);
-        VBox bottom = new VBox(a.btn_clear, a.ta_history, a.btn_export);
-        a.ta_history.setDisable(true);
-        //a.ta_history.addEventFilter(KeyEvent.KEY_TYPED, e -> e.consume());
+        } // Check if values are non-numeric
+        else if (!initialBalanceText.matches("\\d+(\\.\\d+)?") || !interestRateText.matches("\\d+(\\.\\d+)?")) {
+            lbl_message.setText("You must enter numerical value.");
 
-        rootPane.setTop(top);
-        rootPane.setCenter(outputPane);
-        rootPane.setBottom(bottom);
-        BorderPane.setAlignment(outputPane, Pos.CENTER);
+        } // Parse the input values
+        else {
 
-        //////////////////////////////////////////////
-        a.tf_initialBalance.setOnKeyPressed((e) -> {
-            if (e.getCode() == KeyCode.ENTER) {
-                a.tf_interestRate.requestFocus();
+            double initBalance = Double.parseDouble(initialBalanceText);
+            double interestRate = Double.parseDouble(interestRateText);
+
+            // Check if values are less than or equal to zero
+            if (interestRate <= 0 || initBalance <= 0) {
+                //lbl_message.setText("You must enter numbers greater than 0.");
+                return; // Exit the method
             }
-        });
 
-        a.tf_interestRate.setOnKeyPressed((e) -> {
-            if (e.getCode() == KeyCode.ENTER) {
-                a.calculate();
-            } else if (e.getCode() == KeyCode.SPACE) {
-                if (!a.ta_history.getText().equalsIgnoreCase("")) {
-                    a.export();
-                }
+            // Calculate and update the balance
+            if (years == 0) {
+                balance = initBalance;
             }
-        });
 
-// Set padding for UI components
-        Style.setPadding(8, a.lbl_initialBalanceTitle, a.lbl_interestRateTitle, a.tf_interestRate, a.tf_initialBalance,
-                a.lbl_years, a.lbl_yearHint, a.lbl_cye, a.lbl_cycHint, a.lbl_totalBalance, a.lbl_totalBalanceHint,
-                a.ta_history, a.btn_calculate, a.btn_clear, a.btn_export);
+            years++;
 
-// Set font size for UI components
-        Style.setFont(16, a.lbl_initialBalanceTitle, a.lbl_interestRateTitle, a.tf_interestRate, a.tf_initialBalance,
-                a.lbl_years, a.lbl_yearHint, a.lbl_cye, a.lbl_cycHint, a.lbl_totalBalance, a.lbl_totalBalanceHint,
-                a.ta_history, a.btn_calculate, a.btn_clear, a.btn_export);
+            double cyi = balance * interestRate / 100;
+            balance += cyi;
 
-        Style.setFont(40, a.lbl_years, a.lbl_cye, a.lbl_totalBalance);
+            lbl_years.setText(String.valueOf(years));
+            lbl_cye.setText(String.format("$%.2f", cyi));
+            lbl_totalBalance.setText(String.format("$%.2f", balance));
 
-// Apply text styling to UI components
-        Style.styleText("red", "bold", a.lbl_years, a.lbl_cye, a.lbl_totalBalance, a.lbl_message);
-        Style.styleText("red", a.lbl_yearHint, a.lbl_cycHint, a.lbl_totalBalanceHint);
+            ta_history.appendText("Year #" + years
+                    + ": you earned: " + String.format("$%.2f", cyi)
+                    + " and your total balance is: " + String.format("$%.2f", balance) + "\n");
 
-// Create and show the scene
-        Scene scene = new Scene(rootPane, 750, 750);
-        stage.setScene(scene);
-        stage.setTitle("Investment app");
-        stage.setMinWidth(650);
-        stage.setMinHeight(580);
-        stage.getIcons().add(image);
-        stage.show();
+            // clear the message label
+            lbl_message.setText("");
 
-    }
+            if (!ta_history.getText().equalsIgnoreCase("")) {
+                btn_export.setDisable(false);
+            }
 
-    public class CalculateHandler implements EventHandler<ActionEvent> {
-
-        @Override
-        public void handle(ActionEvent event) {
-            a.calculate();
         }
     }
 
-    public class ClearHandler implements EventHandler<ActionEvent> {
+    public void export(Stage stage) {
+        // Create file chooser dialog
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Save Investment file ");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("text files", "*.txt"));
 
-        @Override
-        public void handle(ActionEvent event) {
-            a.clear();
+        // Show save dialog and get selected file
+        File file = fileChooser.showSaveDialog(stage);
+
+        try (PrintWriter printWriter = new PrintWriter(file)) {
+            // Write history text to the selected file
+            printWriter.println(ta_history.getText());
+        } catch (FileNotFoundException e) {
+            // Handle file not found exception
         }
     }
 
-    public class ExportHandler implements EventHandler<ActionEvent> {
+    public void clear() {
 
-        @Override
-        public void handle(ActionEvent actionEvent) {
-            a.export();
-        }
+        years = 0;
+        balance = 0;
+        tf_initialBalance.setText("");
+        tf_interestRate.setText("");
+        lbl_years.setText("0");
+        lbl_cye.setText("0");
+        lbl_totalBalance.setText("0");
+        ta_history.setText("");
+        lbl_message.setText("");
+        btn_export.setDisable(false);
+
     }
-
-    public static void main(String[] args) {
-        launch();
-    }
-
 }
