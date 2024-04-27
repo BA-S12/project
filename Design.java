@@ -10,10 +10,9 @@ import javafx.stage.Stage;
 
 public class Design {
 
-    protected Button btn_calculate, btn_export, btn_clear;
+    private Button btn_calculate, btn_export, btn_clear;
 
-// Declare a Labels
-    protected Label lbl_initialBalanceTitle,
+    private Label lbl_initialBalanceTitle,
             lbl_interestRateTitle,
             lbl_years,
             lbl_yearHint,
@@ -23,41 +22,35 @@ public class Design {
             lbl_totalBalanceHint,
             lbl_message;
 
-//    Declare a Text fields
-    protected TextField tf_initialBalance, tf_interestRate;
+    private TextField tf_initialBalance, tf_interestRate;
 
-//    Declare a Text Area
-    protected TextArea ta_history;
+    private TextArea ta_history;
 
-    protected double balance;
-    protected int years;
-//    Create object for what we declared and invoked in start method
+    private double balance;
+    private int years;
 
-    public Design() {
-        btn_calculate = new Button("Calculate");
-        btn_clear = new Button("Clear");
+    public Design(Button btn_calculate, Button btn_export, Button btn_clear, Label lbl_initialBalanceTitle, Label lbl_interestRateTitle, Label lbl_years, Label lbl_yearHint, Label lbl_cye, Label lbl_cycHint, Label lbl_totalBalance, Label lbl_totalBalanceHint, Label lbl_message, TextField tf_initialBalance, TextField tf_interestRate, TextArea ta_history) {
+        this.btn_calculate = btn_calculate;
+        this.btn_export = btn_export;
+        this.btn_clear = btn_clear;
+        this.lbl_initialBalanceTitle = lbl_initialBalanceTitle;
+        this.lbl_interestRateTitle = lbl_interestRateTitle;
+        this.lbl_years = lbl_years;
+        this.lbl_yearHint = lbl_yearHint;
+        this.lbl_cye = lbl_cye;
+        this.lbl_cycHint = lbl_cycHint;
+        this.lbl_totalBalance = lbl_totalBalance;
+        this.lbl_totalBalanceHint = lbl_totalBalanceHint;
+        this.lbl_message = lbl_message;
+        this.tf_initialBalance = tf_initialBalance;
+        this.tf_interestRate = tf_interestRate;
+        this.ta_history = ta_history;
+        
         btn_clear.setDisable(true);
-        btn_export = new Button("Export");
         btn_export.setDisable(true);
-
-        lbl_initialBalanceTitle = new Label("Initial Balance");
-        lbl_interestRateTitle = new Label("Interest Rate");
-        lbl_years = new Label("0");
-        lbl_yearHint = new Label("Years");
-        lbl_cye = new Label("0");
-        lbl_cycHint = new Label("Current year earnings");
-        lbl_totalBalance = new Label("0");
-        lbl_totalBalanceHint = new Label("Total Balance");
-        lbl_message = new Label("");
-        tf_initialBalance = new TextField();
-        tf_interestRate = new TextField();
-
-        ta_history = new TextArea();
-
     }
 
-    public void calculate() {
-
+    public boolean isNumerical(){
         // Get the text from input fields
         String initialBalanceText = tf_initialBalance.getText().trim();
         String interestRateText = tf_interestRate.getText().trim();
@@ -65,16 +58,21 @@ public class Design {
         // Check if fields are empty
         if (initialBalanceText.isEmpty() || interestRateText.isEmpty()) {
             lbl_message.setText("You must enter numerical value.");
-
+            return false ;
         } // Check if values are non-numeric
         else if (!initialBalanceText.matches("\\d+(\\.\\d+)?") || !interestRateText.matches("\\d+(\\.\\d+)?")) {
             lbl_message.setText("You must enter numerical value.");
-
-        } // Parse the input values
-        else {
-
-            double initBalance = Double.parseDouble(initialBalanceText);
-            double interestRate = Double.parseDouble(interestRateText);
+            return false ;
+        }
+        lbl_message.setText("");
+        return true ;
+    }
+    
+    public void calculate() {
+            
+        if(isNumerical()){
+            double initBalance = Double.parseDouble(tf_initialBalance.getText().trim());
+            double interestRate = Double.parseDouble(tf_interestRate.getText().trim());
 
             // Check if values are less than or equal to zero
             if (interestRate <= 0 || initBalance <= 0) {
@@ -100,23 +98,19 @@ public class Design {
                     + ": you earned: " + String.format("$%.2f", cyi)
                     + " and your total balance is: " + String.format("$%.2f", balance) + "\n");
 
-            // clear the message label
-            lbl_message.setText("");
-
             btn_export.setDisable(false);
             btn_clear.setDisable(false);
-
         }
     }
 
-    public void export(Stage stage) {
+    public void export() {
         // Create file chooser dialog
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Investment file ");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("text files", "*.txt"));
 
         // Show save dialog and get selected file
-        File file = fileChooser.showSaveDialog(stage);
+        File file = fileChooser.showSaveDialog((Stage) btn_calculate.getScene().getWindow());
 
         try (PrintWriter printWriter = new PrintWriter(file)) {
             // Write history text to the selected file
@@ -137,6 +131,7 @@ public class Design {
         lbl_totalBalance.setText("0");
         ta_history.setText("");
         lbl_message.setText("");
+        
         btn_export.setDisable(true);
         btn_clear.setDisable(true);
     }
