@@ -103,10 +103,8 @@ public class Design {
             // clear the message label
             lbl_message.setText("");
 
-            if (!ta_history.getText().equalsIgnoreCase("")) {
-                btn_export.setDisable(false);
-                btn_clear.setDisable(false);
-            }
+            btn_export.setDisable(false);
+            btn_clear.setDisable(false);
 
         }
     }
