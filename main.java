@@ -11,8 +11,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 
 public class Project extends Application {
@@ -20,6 +22,12 @@ public class Project extends Application {
     Button btn_calculate = new Button("Calculate");
     Button btn_clear = new Button("Clear");
     Button btn_export = new Button("Export");
+    Button btn_back = new Button("Back");
+
+    Tooltip enter = new Tooltip("Shortcut: Enter ");
+    Tooltip ctrlSpace = new Tooltip("Shortcut: Space");
+    Tooltip ctrlBackSpace = new Tooltip("Shortcut: Backspace");
+    Tooltip ctrlZ = new Tooltip("Shortcut: Ctrl+ Z");
 
     Label lbl_initialBalanceTitle = new Label("Initial Balance");
     Label lbl_interestRateTitle = new Label("Interest Rate");
@@ -35,7 +43,7 @@ public class Project extends Application {
 
     TextArea ta_history = new TextArea();
 
-  private Design design = new Design(btn_calculate, btn_export, btn_clear, lbl_initialBalanceTitle,
+    private Design design = new Design(btn_calculate, btn_export, btn_back, btn_clear, lbl_initialBalanceTitle,
             lbl_interestRateTitle, lbl_years, lbl_yearHint, lbl_cye, lbl_cycHint, lbl_totalBalance,
             lbl_totalBalanceHint, lbl_message, tf_initialBalance, tf_interestRate, ta_history);
 
@@ -43,29 +51,32 @@ public class Project extends Application {
     public void start(Stage stage) throws IOException {
 
         Image image = new Image("icon.jpg");
-        //Line 1
+
         HBox inputPane = new HBox(lbl_initialBalanceTitle, tf_initialBalance, lbl_interestRateTitle,
                 tf_interestRate);
         inputPane.setAlignment(Pos.CENTER);
 
-//        Label for to what the user entered in text field
         HBox messagePane = new HBox(
                 lbl_message
         );
         messagePane.setAlignment(Pos.CENTER);
 
-//      make button width take full width of their parent
         btn_calculate.setMaxWidth(Double.MAX_VALUE);
         btn_calculate.setOnAction(new CalculateHandler());
+        btn_calculate.setTooltip(enter);
 
         btn_clear.setMaxWidth(Double.MAX_VALUE);
         btn_clear.setOnAction(new ClearHandler());
+        btn_clear.setTooltip(ctrlBackSpace);
 
-// Setup export button
+        btn_back.setMaxWidth(Double.MAX_VALUE);
+        btn_back.setOnAction(new BackHandler());
+        btn_back.setTooltip(ctrlZ);
+
         btn_export.setMaxWidth(Double.MAX_VALUE);
         btn_export.setOnAction(new ExportHandler());
+        btn_export.setTooltip(ctrlSpace);
 
-// Create UI panes for displaying output
         VBox yearsPane = new VBox(lbl_years, lbl_yearHint);
         yearsPane.setAlignment(Pos.CENTER);
 
@@ -78,20 +89,15 @@ public class Project extends Application {
         HBox outputPane = new HBox(yearsPane, cyePane, totalBalancePane);
         outputPane.setAlignment(Pos.CENTER);
 
-// Create root pane and arrange UI components
-        BorderPane rootPane = new BorderPane();
-
         VBox top = new VBox(inputPane, messagePane, btn_calculate);
-        VBox bottom = new VBox(btn_clear, ta_history, btn_export);
-        ta_history.setDisable(true);
-        //a.ta_history.addEventFilter(KeyEvent.KEY_TYPED, e -> e.consume());
+        VBox bottom = new VBox(btn_back, btn_clear, ta_history, btn_export);
 
+        BorderPane rootPane = new BorderPane();
         rootPane.setTop(top);
         rootPane.setCenter(outputPane);
         rootPane.setBottom(bottom);
         BorderPane.setAlignment(outputPane, Pos.CENTER);
 
-        //////////////////////////////////////////////
         tf_initialBalance.setOnKeyPressed((e) -> {
             if (e.getCode() == KeyCode.ENTER) {
                 tf_interestRate.requestFocus();
@@ -100,36 +106,25 @@ public class Project extends Application {
 
         tf_interestRate.setOnKeyPressed((e) -> {
             if (e.getCode() == KeyCode.ENTER) {
-                design.calculate();
-            } else if (e.getCode() == KeyCode.SPACE) {
-                if (!ta_history.getText().equalsIgnoreCase("")) {
-                    design.export();
-                }
-            }
-            else if (e.getCode() == KeyCode.BACK_SPACE){
-                design.clear();
+                lbl_years.requestFocus();
             }
         });
 
-
-// Set padding for UI components
         Style.setPadding(8, lbl_initialBalanceTitle, lbl_interestRateTitle, tf_interestRate, tf_initialBalance,
                 lbl_years, lbl_yearHint, lbl_cye, lbl_cycHint, lbl_totalBalance, lbl_totalBalanceHint,
-                ta_history, btn_calculate, btn_clear, btn_export);
-
-// Set font size for UI components
+                ta_history, btn_calculate, btn_back, btn_clear, btn_export);
         Style.setFont(16, lbl_initialBalanceTitle, lbl_interestRateTitle, tf_interestRate, tf_initialBalance,
                 lbl_years, lbl_yearHint, lbl_cye, lbl_cycHint, lbl_totalBalance, lbl_totalBalanceHint,
-                ta_history, btn_calculate, btn_clear, btn_export);
-
+                ta_history, btn_calculate, btn_back, btn_clear, btn_export);
         Style.setFont(40, lbl_years, lbl_cye, lbl_totalBalance);
-
-// Apply text styling to UI components
         Style.styleText("red", "bold", lbl_years, lbl_cye, lbl_totalBalance, lbl_message);
         Style.styleText("red", lbl_yearHint, lbl_cycHint, lbl_totalBalanceHint);
 
-// Create and show the scene
         Scene scene = new Scene(rootPane, 750, 750);
+        scene.addEventHandler(KeyEvent.KEY_PRESSED, new SceneHandler());
+
+        ta_history.setDisable(true);
+
         stage.setScene(scene);
         stage.setTitle("Investment app");
         stage.setMinWidth(650);
@@ -144,6 +139,16 @@ public class Project extends Application {
         @Override
         public void handle(ActionEvent event) {
             design.calculate();
+            lbl_years.requestFocus();
+        }
+    }
+
+    public class BackHandler implements EventHandler<ActionEvent> {
+
+        @Override
+        public void handle(ActionEvent event) {
+            design.back();
+            lbl_years.requestFocus();
         }
     }
 
@@ -152,6 +157,7 @@ public class Project extends Application {
         @Override
         public void handle(ActionEvent event) {
             design.clear();
+            lbl_years.requestFocus();
         }
     }
 
@@ -160,6 +166,28 @@ public class Project extends Application {
         @Override
         public void handle(ActionEvent e) {
             design.export();
+            lbl_years.requestFocus();
+        }
+    }
+
+    public class SceneHandler implements EventHandler<KeyEvent> {
+
+        @Override
+        public void handle(KeyEvent e) {
+            if (e.getCode() == KeyCode.ENTER) {
+                design.calculate();
+            } else if (e.getCode() == KeyCode.SPACE) {
+                if (!ta_history.getText().equalsIgnoreCase("")) {
+                    design.export();
+                }
+            } else if (e.getCode() == KeyCode.BACK_SPACE) {
+                design.clear();
+
+            } else if (e.isControlDown() && e.getCode() == KeyCode.Z) {
+                if (ta_history.getText().equalsIgnoreCase("")) {
+                    design.back();
+                }
+            }
         }
     }
 
@@ -168,4 +196,3 @@ public class Project extends Application {
     }
 
 }
-
