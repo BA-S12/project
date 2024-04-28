@@ -35,7 +35,7 @@ public class Project extends Application {
 
     TextArea ta_history = new TextArea();
 
-    private Design a = new Design(btn_calculate, btn_export, btn_clear, lbl_initialBalanceTitle,
+  private Design design = new Design(btn_calculate, btn_export, btn_clear, lbl_initialBalanceTitle,
             lbl_interestRateTitle, lbl_years, lbl_yearHint, lbl_cye, lbl_cycHint, lbl_totalBalance,
             lbl_totalBalanceHint, lbl_message, tf_initialBalance, tf_interestRate, ta_history);
 
@@ -100,13 +100,17 @@ public class Project extends Application {
 
         tf_interestRate.setOnKeyPressed((e) -> {
             if (e.getCode() == KeyCode.ENTER) {
-                a.calculate();
+                design.calculate();
             } else if (e.getCode() == KeyCode.SPACE) {
                 if (!ta_history.getText().equalsIgnoreCase("")) {
-                    a.export();
+                    design.export();
                 }
             }
+            else if (e.getCode() == KeyCode.BACK_SPACE){
+                design.clear();
+            }
         });
+
 
 // Set padding for UI components
         Style.setPadding(8, lbl_initialBalanceTitle, lbl_interestRateTitle, tf_interestRate, tf_initialBalance,
@@ -139,7 +143,7 @@ public class Project extends Application {
 
         @Override
         public void handle(ActionEvent event) {
-            a.calculate();
+            design.calculate();
         }
     }
 
@@ -147,7 +151,7 @@ public class Project extends Application {
 
         @Override
         public void handle(ActionEvent event) {
-            a.clear();
+            design.clear();
         }
     }
 
@@ -155,7 +159,7 @@ public class Project extends Application {
 
         @Override
         public void handle(ActionEvent e) {
-            a.export();
+            design.export();
         }
     }
 
@@ -164,3 +168,4 @@ public class Project extends Application {
     }
 
 }
+
