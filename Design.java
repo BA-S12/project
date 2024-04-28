@@ -10,9 +10,9 @@ import javafx.stage.Stage;
 
 public class Design {
 
-    private Button btn_calculate, btn_export, btn_clear;
+    private final Button btn_calculate, btn_export, btn_clear;
 
-    private Label lbl_initialBalanceTitle,
+    private final Label lbl_initialBalanceTitle,
             lbl_interestRateTitle,
             lbl_years,
             lbl_yearHint,
@@ -22,9 +22,9 @@ public class Design {
             lbl_totalBalanceHint,
             lbl_message;
 
-    private TextField tf_initialBalance, tf_interestRate;
+    private final TextField tf_initialBalance, tf_interestRate;
 
-    private TextArea ta_history;
+    private final TextArea ta_history;
 
     private double balance;
     private int years;
@@ -45,7 +45,7 @@ public class Design {
         this.tf_initialBalance = tf_initialBalance;
         this.tf_interestRate = tf_interestRate;
         this.ta_history = ta_history;
-        
+
         btn_clear.setDisable(true);
         btn_export.setDisable(true);
     }
@@ -67,9 +67,9 @@ public class Design {
         lbl_message.setText("");
         return true ;
     }
-    
+
     public void calculate() {
-            
+
         if(isNumerical()){
             double initBalance = Double.parseDouble(tf_initialBalance.getText().trim());
             double interestRate = Double.parseDouble(tf_interestRate.getText().trim());
@@ -91,12 +91,12 @@ public class Design {
             balance += cyi;
 
             lbl_years.setText(String.valueOf(years));
-            lbl_cye.setText(String.format("$%.2f", cyi));
-            lbl_totalBalance.setText(String.format("$%.2f", balance));
+            lbl_cye.setText(String.format("SR%.2f", cyi));
+            lbl_totalBalance.setText(String.format("SR%.2f", balance));
 
             ta_history.appendText("Year #" + years
-                    + ": you earned: " + String.format("$%.2f", cyi)
-                    + " and your total balance is: " + String.format("$%.2f", balance) + "\n");
+                    + ": you earned: " + String.format("SR%.2f", cyi)
+                    + " and your total balance is: " + String.format("SR%.2f", balance) + "\n");
 
             btn_export.setDisable(false);
             btn_clear.setDisable(false);
@@ -131,8 +131,7 @@ public class Design {
         lbl_totalBalance.setText("0");
         ta_history.setText("");
         lbl_message.setText("");
-        
+
         btn_export.setDisable(true);
         btn_clear.setDisable(true);
     }
-}
