@@ -95,24 +95,26 @@ public class Design {
             balance += cyi;
 
             lbl_years.setText(String.valueOf(years));
-            lbl_cye.setText(String.format("$%.2f", cyi));
-            lbl_totalBalance.setText(String.format("$%.2f", balance));
+            lbl_cye.setText(String.format("SR%.2f", cyi));
+            lbl_totalBalance.setText(String.format("SR%.2f", balance));
             ta_history.appendText("Year #" + years
-                    + ": you earned: " + String.format("$%.2f", cyi)
-                    + " and your total balance is: " + String.format("$%.2f", balance) + "\n");
+                    + ": you earned: " + String.format("SR%.2f", cyi)
+                    + " and your total balance is: " + String.format("SR%.2f", balance) + "\n");
 
             btn_export.setDisable(false);
             btn_clear.setDisable(false);
             btn_back.setDisable(true);
+            lbl_years.requestFocus();
         }
     }
 
     public void export() {
+        lbl_years.requestFocus();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Investment file ");
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("text files", "*.txt"));
 
-        File file = fileChooser.showSaveDialog((Stage) btn_calculate.getScene().getWindow());
+        File file = fileChooser.showSaveDialog((Stage) btn_export.getScene().getWindow());
 
         try (PrintWriter printWriter = new PrintWriter(file)) {
             printWriter.println(ta_history.getText());
@@ -130,9 +132,7 @@ public class Design {
         ta_history.setText(history);
         tf_initialBalance.setText(String.valueOf(initBalance));
         tf_interestRate.setText(String.valueOf(interestRate));
-
         calculate();
-        btn_back.setDisable(true);
     }
 
     public void clear() {
@@ -151,5 +151,6 @@ public class Design {
         btn_export.setDisable(true);
         btn_clear.setDisable(true);
         btn_back.setDisable(false);
+        lbl_years.requestFocus();
     }
 }
