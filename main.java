@@ -25,8 +25,8 @@ public class Project extends Application {
     Button btn_back = new Button("Back");
 
     Tooltip enter = new Tooltip("Shortcut: Enter ");
-    Tooltip ctrlSpace = new Tooltip("Shortcut: Space");
-    Tooltip ctrlBackSpace = new Tooltip("Shortcut: Backspace");
+    Tooltip space = new Tooltip("Shortcut: Space");
+    Tooltip backSpace = new Tooltip("Shortcut: Backspace");
     Tooltip ctrlZ = new Tooltip("Shortcut: Ctrl+ Z");
 
     Label lbl_initialBalanceTitle = new Label("Initial Balance");
@@ -67,7 +67,7 @@ public class Project extends Application {
 
         btn_clear.setMaxWidth(Double.MAX_VALUE);
         btn_clear.setOnAction(new ClearHandler());
-        btn_clear.setTooltip(ctrlBackSpace);
+        btn_clear.setTooltip(backSpace);
 
         btn_back.setMaxWidth(Double.MAX_VALUE);
         btn_back.setOnAction(new BackHandler());
@@ -75,7 +75,7 @@ public class Project extends Application {
 
         btn_export.setMaxWidth(Double.MAX_VALUE);
         btn_export.setOnAction(new ExportHandler());
-        btn_export.setTooltip(ctrlSpace);
+        btn_export.setTooltip(space);
 
         VBox yearsPane = new VBox(lbl_years, lbl_yearHint);
         yearsPane.setAlignment(Pos.CENTER);
@@ -109,12 +109,12 @@ public class Project extends Application {
                 tf_initialBalance.requestFocus();
             }
         });
-        
+
         ta_history.setEditable(false);
-        ta_history.setOnMouseClicked((e) ->{
+        ta_history.setOnMouseClicked((e) -> {
             lbl_years.requestFocus();
         });
-        
+
         Style.setPadding(8, lbl_initialBalanceTitle, lbl_interestRateTitle, tf_interestRate, tf_initialBalance,
                 lbl_years, lbl_yearHint, lbl_cye, lbl_cycHint, lbl_totalBalance, lbl_totalBalanceHint,
                 ta_history, btn_calculate, btn_back, btn_clear, btn_export);
