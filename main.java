@@ -99,17 +99,22 @@ public class Project extends Application {
         BorderPane.setAlignment(outputPane, Pos.CENTER);
 
         tf_initialBalance.setOnKeyPressed((e) -> {
-            if (e.getCode() == KeyCode.ENTER) {
+            if (e.getCode() == KeyCode.RIGHT) {
                 tf_interestRate.requestFocus();
             }
         });
 
         tf_interestRate.setOnKeyPressed((e) -> {
-            if (e.getCode() == KeyCode.ENTER) {
-                lbl_years.requestFocus();
+            if (e.getCode() == KeyCode.LEFT) {
+                tf_initialBalance.requestFocus();
             }
         });
-
+        
+        ta_history.setEditable(false);
+        ta_history.setOnMouseClicked((e) ->{
+            lbl_years.requestFocus();
+        });
+        
         Style.setPadding(8, lbl_initialBalanceTitle, lbl_interestRateTitle, tf_interestRate, tf_initialBalance,
                 lbl_years, lbl_yearHint, lbl_cye, lbl_cycHint, lbl_totalBalance, lbl_totalBalanceHint,
                 ta_history, btn_calculate, btn_back, btn_clear, btn_export);
@@ -122,8 +127,6 @@ public class Project extends Application {
 
         Scene scene = new Scene(rootPane, 750, 750);
         scene.addEventHandler(KeyEvent.KEY_PRESSED, new SceneHandler());
-
-        ta_history.setDisable(true);
 
         stage.setScene(scene);
         stage.setTitle("Investment app");
@@ -139,7 +142,6 @@ public class Project extends Application {
         @Override
         public void handle(ActionEvent event) {
             design.calculate();
-            lbl_years.requestFocus();
         }
     }
 
@@ -148,7 +150,6 @@ public class Project extends Application {
         @Override
         public void handle(ActionEvent event) {
             design.back();
-            lbl_years.requestFocus();
         }
     }
 
@@ -157,7 +158,6 @@ public class Project extends Application {
         @Override
         public void handle(ActionEvent event) {
             design.clear();
-            lbl_years.requestFocus();
         }
     }
 
@@ -166,7 +166,6 @@ public class Project extends Application {
         @Override
         public void handle(ActionEvent e) {
             design.export();
-            lbl_years.requestFocus();
         }
     }
 
