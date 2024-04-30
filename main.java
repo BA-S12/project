@@ -49,7 +49,16 @@ public class Project extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
+//        Change button cursor
+        btn_calculate.setCursor(Cursor.HAND);
+        btn_clear.setCursor(Cursor.HAND);
+        btn_export.setCursor(Cursor.HAND);
+        btn_back.setCursor(Cursor.HAND);
 
+//        Add placeholder to textField
+        tf_initialBalance.setPromptText("Enter initial balance");
+        tf_interestRate.setPromptText("Enter interest rate");
+        
         Image image = new Image("icon.jpg");
 
         HBox inputPane = new HBox(lbl_initialBalanceTitle, tf_initialBalance, lbl_interestRateTitle,
